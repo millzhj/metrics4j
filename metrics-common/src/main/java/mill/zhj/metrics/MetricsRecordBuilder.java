@@ -36,15 +36,6 @@ public abstract class MetricsRecordBuilder {
 	public abstract MetricsRecordBuilder tag(MetricsInfo info, String value);
 
 	/**
-	 * Add an immutable metrics tag object
-	 * 
-	 * @param tag
-	 *            a pre-made tag object (potentially save an object construction)
-	 * @return self
-	 */
-	public abstract MetricsRecordBuilder add(MetricsTag tag);
-
-	/**
 	 * Add a pre-made immutable metric object
 	 * 
 	 * @param metric
