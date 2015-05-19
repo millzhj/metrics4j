@@ -28,17 +28,12 @@ public abstract class MetricsSystem {
 	/**
 	 * Register a metrics source
 	 * 
-	 * @param <T>
-	 *            the actual type of the source object
-	 * @param source
-	 *            object to register
 	 * @param name
-	 *            of the source. Must be unique or null (then extracted from the annotations of the source object.)
 	 * @param desc
-	 *            the description of the source (or null. See above.)
-	 * @return the source object
-	 * @exception MetricsException
+	 * @param source
+	 * @return
 	 */
+
 	public abstract MetricsSource register(String name, String desc, MetricsSource source);
 
 	/**
@@ -52,13 +47,10 @@ public abstract class MetricsSystem {
 	/**
 	 * Register a metrics source (deriving name and description from the object)
 	 * 
-	 * @param <T>
-	 *            the actual type of the source object
 	 * @param source
-	 *            object to register
-	 * @return the source object
-	 * @exception MetricsException
+	 * @return
 	 */
+
 	public MetricsSource register(MetricsSource source) {
 		return register(null, null, source);
 	}
@@ -74,26 +66,13 @@ public abstract class MetricsSystem {
 	/**
 	 * Register a metrics sink
 	 * 
-	 * @param <T>
-	 *            the type of the sink
-	 * @param sink
-	 *            to register
 	 * @param name
-	 *            of the sink. Must be unique.
 	 * @param desc
-	 *            the description of the sink
-	 * @return the sink
-	 * @exception MetricsException
+	 * @param sink
+	 * @return
 	 */
-	public abstract MetricsSink register(String name, String desc, MetricsSink sink);
 
-	/**
-	 * Register a callback interface for JMX events
-	 * 
-	 * @param callback
-	 *            the callback object implementing the MBean interface.
-	 */
-	public abstract void register(Callback callback);
+	public abstract MetricsSink register(String name, String desc, MetricsSink sink);
 
 	/**
 	 * Requests an immediate publish of all metrics from sources to sinks.
@@ -113,51 +92,4 @@ public abstract class MetricsSystem {
 	 */
 	public abstract boolean shutdown();
 
-	/**
-	 * The metrics system callback interface (needed for proxies.)
-	 */
-	public interface Callback {
-
-		/**
-		 * Called before start()
-		 */
-		void preStart();
-
-		/**
-		 * Called after start()
-		 */
-		void postStart();
-
-		/**
-		 * Called before stop()
-		 */
-		void preStop();
-
-		/**
-		 * Called after stop()
-		 */
-		void postStop();
-	}
-
-	/**
-	 * Convenient abstract class for implementing callback interface
-	 */
-	public static abstract class AbstractCallback implements Callback {
-
-		@Override
-		public void preStart() {
-		}
-
-		@Override
-		public void postStart() {
-		}
-
-		@Override
-		public void preStop() {
-		}
-
-		@Override
-		public void postStop() {
-		}
-	}
 }
