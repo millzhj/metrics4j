@@ -29,7 +29,35 @@ import java.io.Closeable;
  * MetricsSystem will close the sink when it is stopped.
  */
 
-public interface MetricsSink extends MetricsPlugin {
+public interface MetricsSink {
+
+	/**
+	 * set metric context
+	 * 
+	 * @param context
+	 */
+	void setContext(String context);
+
+	/**
+	 * set metric application
+	 * 
+	 * @param application
+	 */
+	void setApplication(String application);
+	
+	/**
+	 * set metric context
+	 * 
+	 * @param context
+	 */
+	String getContext();
+
+	/**
+	 * set metric application
+	 * 
+	 * @param application
+	 */
+	String getApplication();
 
 	/**
 	 * Put a metrics record in the sink
@@ -43,4 +71,9 @@ public interface MetricsSink extends MetricsPlugin {
 	 * Flush any buffered metrics
 	 */
 	void flush();
+
+	/**
+	 * stop this sink
+	 */
+	void stop();
 }

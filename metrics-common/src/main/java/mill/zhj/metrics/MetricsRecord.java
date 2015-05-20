@@ -52,5 +52,5 @@ public interface MetricsRecord {
 	 * 
 	 * @return an immutable iterable interface for metrics
 	 */
-	Iterable<MetricsInfo> metrics();
+	Iterable<Metircs> metrics();
 }

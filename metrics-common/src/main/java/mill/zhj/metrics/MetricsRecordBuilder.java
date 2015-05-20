@@ -25,26 +25,6 @@ package mill.zhj.metrics;
 public abstract class MetricsRecordBuilder {
 
 	/**
-	 * Add a metrics tag
-	 * 
-	 * @param info
-	 *            metadata of the tag
-	 * @param value
-	 *            of the tag
-	 * @return self
-	 */
-	public abstract MetricsRecordBuilder tag(MetricsInfo info, String value);
-
-	/**
-	 * Add a pre-made immutable metric object
-	 * 
-	 * @param metric
-	 *            the pre-made metric to save an object construction
-	 * @return self
-	 */
-	public abstract MetricsRecordBuilder add(AbstractMetric metric);
-
-	/**
 	 * Set the context tag
 	 * 
 	 * @param value
@@ -119,17 +99,4 @@ public abstract class MetricsRecordBuilder {
 	 */
 	public abstract MetricsRecordBuilder addGauge(MetricsInfo info, double value);
 
-	/**
-	 * @return the parent metrics collector object
-	 */
-	public abstract MetricsCollector parent();
-
-	/**
-	 * Syntactic sugar to add multiple records in a collector in a one liner.
-	 * 
-	 * @return the parent metrics collector object
-	 */
-	public MetricsCollector endRecord() {
-		return parent();
-	}
 }

@@ -16,23 +16,29 @@
  * limitations under the License.
  */
 
-package mill.zhj.metrics;
+package mill.zhj.metrics.impl;
 
+import mill.zhj.metrics.Metircs;
+import mill.zhj.metrics.MetricType;
+import mill.zhj.metrics.MetricsInfo;
 
-/**
- * The metrics source interface
- */
-public interface MetricsSource {
+class MetricGaugeLong extends Metircs {
 
-	/**
-	 * Get metrics from the source
-	 * 
-	 * @param collector
-	 *            to contain the resulting metrics snapshot
-	 * @param all
-	 *            if true, return all metrics even if unchanged.
-	 */
-	void getMetrics(MetricsCollector collector);
-	
-	void stop();
+	final long value;
+
+	public MetricGaugeLong(MetricsInfo info, long value) {
+		super(info);
+		this.value = value;
+	}
+
+	@Override
+	public Long value() {
+		return value;
+	}
+
+	@Override
+	public MetricType type() {
+		return MetricType.GAUGE;
+	}
+
 }

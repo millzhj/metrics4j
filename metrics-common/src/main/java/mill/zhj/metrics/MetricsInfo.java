@@ -33,4 +33,5 @@ public interface MetricsInfo {
 	 * @return the description of the metric/tag
 	 */
 	String description();
+
 }

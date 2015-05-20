@@ -16,20 +16,29 @@
  * limitations under the License.
  */
 
-package mill.zhj.metrics;
+package mill.zhj.metrics.impl;
 
-import org.apache.commons.configuration.SubsetConfiguration;
+import mill.zhj.metrics.Metircs;
+import mill.zhj.metrics.MetricType;
+import mill.zhj.metrics.MetricsInfo;
 
-/**
- * The plugin interface for the metrics framework
- */
-public interface MetricsPlugin {
+class MetricGaugeInt extends Metircs {
 
-	/**
-	 * Initialize the plugin
-	 * 
-	 * @param conf
-	 *            the configuration object for the plugin
-	 */
-	void init(SubsetConfiguration conf);
+	final int value;
+
+	public MetricGaugeInt(MetricsInfo info, int value) {
+		super(info);
+		this.value = value;
+	}
+
+	@Override
+	public Integer value() {
+		return value;
+	}
+
+	@Override
+	public MetricType type() {
+		return MetricType.GAUGE;
+	}
+
 }

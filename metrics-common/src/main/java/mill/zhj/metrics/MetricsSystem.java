@@ -21,9 +21,7 @@ package mill.zhj.metrics;
 /**
  * The metrics system interface
  */
-public abstract class MetricsSystem {
-
-	public abstract MetricsSystem init(String prefix);
+public interface MetricsSystem {
 
 	/**
 	 * Register a metrics source
@@ -34,7 +32,7 @@ public abstract class MetricsSystem {
 	 * @return
 	 */
 
-	public abstract MetricsSource register(String name, String desc, MetricsSource source);
+	public MetricsSource register(String name, MetricsSource source);
 
 	/**
 	 * Unregister a metrics source
@@ -42,18 +40,7 @@ public abstract class MetricsSystem {
 	 * @param name
 	 *            of the source. This is the name you use to call register()
 	 */
-	public abstract void unregisterSource(String name);
-
-	/**
-	 * Register a metrics source (deriving name and description from the object)
-	 * 
-	 * @param source
-	 * @return
-	 */
-
-	public MetricsSource register(MetricsSource source) {
-		return register(null, null, source);
-	}
+	public void unregisterSource(String name);
 
 	/**
 	 * @param name
@@ -61,7 +48,7 @@ public abstract class MetricsSystem {
 	 * @return the metrics source (potentially wrapped) object
 	 */
 
-	public abstract MetricsSource getSource(String name);
+	public MetricsSource getSource(String name);
 
 	/**
 	 * Register a metrics sink
@@ -72,7 +59,7 @@ public abstract class MetricsSystem {
 	 * @return
 	 */
 
-	public abstract MetricsSink register(String name, String desc, MetricsSink sink);
+	public MetricsSink register(MetricsSink sink);
 
 	/**
 	 * Requests an immediate publish of all metrics from sources to sinks.
@@ -82,7 +69,7 @@ public abstract class MetricsSystem {
 	 * caller. If this can't be accomplished in reasonable time it's OK to return to the caller before everything is
 	 * done.
 	 */
-	public abstract void publishMetricsNow();
+	public void publishMetrics();
 
 	/**
 	 * Shutdown the metrics system completely (usually during server shutdown.) The MetricsSystemMXBean will be
@@ -90,6 +77,6 @@ public abstract class MetricsSystem {
 	 * 
 	 * @return true if shutdown completed
 	 */
-	public abstract boolean shutdown();
+	public boolean shutdown();
 
 }
