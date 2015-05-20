@@ -32,7 +32,7 @@ public interface MetricsSource {
 	 * @param all
 	 *            if true, return all metrics even if unchanged.
 	 */
-	void getMetrics(MetricsCollector collector);
+	void getMetrics();
 	
 	void stop();
 }

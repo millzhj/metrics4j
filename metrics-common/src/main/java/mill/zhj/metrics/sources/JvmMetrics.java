@@ -27,11 +27,14 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import mill.zhj.metrics.MetricsCollector;
+import org.apache.log4j.or.jms.MessageRenderer;
+
 import mill.zhj.metrics.MetricsInfo;
+import mill.zhj.metrics.MetricsRecord;
 import mill.zhj.metrics.MetricsRecordBuilder;
 import mill.zhj.metrics.MetricsSource;
 import mill.zhj.metrics.MetricsSystem;
+import mill.zhj.metrics.impl.MetricsRecordBuilderImpl;
 import static mill.zhj.metrics.sources.JvmMetricsInfo.*;
 
 /**
@@ -55,10 +58,11 @@ public class JvmMetrics implements MetricsSource {
 		return (JvmMetrics) ms.register(DEFAULT_CONTEXT, new JvmMetrics());
 	}
 
-	public void getMetrics(MetricsCollector collector) {
-		MetricsRecordBuilder rb = null;
+	public void getMetrics() {
+		MetricsRecordBuilder rb = new MetricsRecordBuilderImpl();
+		rb.setContext(DEFAULT_CONTEXT);
 		getMemoryUsage(rb);
-		getGcUsage(rb);
+		// getGcUsage(rb);
 		getThreadUsage(rb);
 	}
 
@@ -75,34 +79,34 @@ public class JvmMetrics implements MetricsSource {
 				.addGauge(MemMaxM, runtime.maxMemory() / M);
 	}
 
-	private void getGcUsage(MetricsRecordBuilder rb) {
-		long count = 0;
-		long timeMillis = 0;
-		for (GarbageCollectorMXBean gcBean : gcBeans) {
-			long c = gcBean.getCollectionCount();
-			long t = gcBean.getCollectionTime();
-			MetricsInfo[] gcInfo = getGcInfo(gcBean.getName());
-			rb.addCounter(gcInfo[0], c).addCounter(gcInfo[1], t);
-			count += c;
-			timeMillis += t;
-		}
-		rb.addCounter(GcCount, count).addCounter(GcTimeMillis, timeMillis);
+	// private void getGcUsage(MetricsRecordBuilder rb) {
+	// long count = 0;
+	// long timeMillis = 0;
+	// for (GarbageCollectorMXBean gcBean : gcBeans) {
+	// long c = gcBean.getCollectionCount();
+	// long t = gcBean.getCollectionTime();
+	// MetricsInfo[] gcInfo = getGcInfo(gcBean.getName());
+	// rb.addCounter(gcInfo[0], c).addCounter(gcInfo[1], t);
+	// count += c;
+	// timeMillis += t;
+	// }
+	// rb.addCounter(GcCount, count).addCounter(GcTimeMillis, timeMillis);
+	//
+	// }
 
-	}
-
-	private MetricsInfo[] getGcInfo(String gcName) {
-		MetricsInfo[] gcInfo = gcInfoCache.get(gcName);
-		if (gcInfo == null) {
-			gcInfo = new MetricsInfo[2];
-			gcInfo[0] = Interns.info("GcCount" + gcName, "GC Count for " + gcName);
-			gcInfo[1] = Interns.info("GcTimeMillis" + gcName, "GC Time for " + gcName);
-			MetricsInfo[] previousGcInfo = gcInfoCache.putIfAbsent(gcName, gcInfo);
-			if (previousGcInfo != null) {
-				return previousGcInfo;
-			}
-		}
-		return gcInfo;
-	}
+	// private MetricsInfo[] getGcInfo(String gcName) {
+	// MetricsInfo[] gcInfo = gcInfoCache.get(gcName);
+	// if (gcInfo == null) {
+	// gcInfo = new MetricsInfo[2];
+	// gcInfo[0] = Interns.info("GcCount" + gcName, "GC Count for " + gcName);
+	// gcInfo[1] = Interns.info("GcTimeMillis" + gcName, "GC Time for " + gcName);
+	// MetricsInfo[] previousGcInfo = gcInfoCache.putIfAbsent(gcName, gcInfo);
+	// if (previousGcInfo != null) {
+	// return previousGcInfo;
+	// }
+	// }
+	// return gcInfo;
+	// }
 
 	private void getThreadUsage(MetricsRecordBuilder rb) {
 		int threadsNew = 0;

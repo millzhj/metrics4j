@@ -24,6 +24,10 @@ public class DefaultMetricsSystem implements MetricsSystem {
 
 	private static final String DEFALUT_CONF_FILE = "conf.properties";
 
+	private static final String APP_KEY = "app";
+
+	private String application = "DEFAULT";
+
 	private DefaultMetricsSystem() {
 		// load from file path
 		String file = System.getProperty(PRPERTIES_NAME);
@@ -44,9 +48,12 @@ public class DefaultMetricsSystem implements MetricsSystem {
 
 	@SuppressWarnings("rawtypes")
 	private void init(Configuration config) throws IllegalStateException {
+		application = config.getString(APP_KEY);
 		Iterator keys = config.getKeys();
 		while (keys.hasNext()) {
 			String key = (String) keys.next();
+			if (key.equals(APP_KEY))
+				continue;
 			String value = (String) config.getString(key);
 			String[] splitKey = key.split(".");
 			if (splitKey.length < 3) {
@@ -88,9 +95,8 @@ public class DefaultMetricsSystem implements MetricsSystem {
 	}
 
 	@Override
-	public void publishMetrics() {
-		// TODO Auto-generated method stub
-
+	public void start() {
+		
 	}
 
 	@Override

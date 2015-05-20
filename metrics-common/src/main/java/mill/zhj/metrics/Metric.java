@@ -1,10 +1,10 @@
 package mill.zhj.metrics;
 
-public abstract class Metircs implements MetricsInfo {
+public abstract class Metric implements MetricsInfo {
 
 	private MetricsInfo info;
 
-	public Metircs(MetricsInfo info) {
+	public Metric(MetricsInfo info) {
 		this.info = info;
 	}
 

@@ -30,7 +30,12 @@ import java.io.Closeable;
  */
 
 public interface MetricsSink {
-
+	
+	
+	void setName(String name);
+	
+	
+	String getName();
 	/**
 	 * set metric context
 	 * 

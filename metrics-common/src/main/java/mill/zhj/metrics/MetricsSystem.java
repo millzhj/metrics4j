@@ -69,7 +69,7 @@ public interface MetricsSystem {
 	 * caller. If this can't be accomplished in reasonable time it's OK to return to the caller before everything is
 	 * done.
 	 */
-	public void publishMetrics();
+	public void start();
 
 	/**
 	 * Shutdown the metrics system completely (usually during server shutdown.) The MetricsSystemMXBean will be

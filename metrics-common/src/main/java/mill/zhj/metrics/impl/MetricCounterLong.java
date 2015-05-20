@@ -18,11 +18,11 @@
 
 package mill.zhj.metrics.impl;
 
-import mill.zhj.metrics.Metircs;
+import mill.zhj.metrics.Metric;
 import mill.zhj.metrics.MetricType;
 import mill.zhj.metrics.MetricsInfo;
 
-class MetricCounterLong extends Metircs {
+class MetricCounterLong extends Metric {
 
 	final long value;
 

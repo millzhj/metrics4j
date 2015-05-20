@@ -21,79 +21,71 @@ package mill.zhj.metrics.impl;
 import java.util.Collections;
 import java.util.List;
 
+import mill.zhj.metrics.Metric;
 import mill.zhj.metrics.MetricsInfo;
+import mill.zhj.metrics.MetricsRecord;
 import mill.zhj.metrics.MetricsRecordBuilder;
 
 import com.google.common.collect.Lists;
 
-class MetricsRecordBuilderImpl extends MetricsRecordBuilder {
+public class MetricsRecordBuilderImpl extends MetricsRecordBuilder {
 
 	private final long timestamp;
-	private final List<MetricsInfo> metrics;
+	private final List<Metric> metrics;
+	private String context;
 
-	private MetricsRecordBuilderImpl() {
+	public MetricsRecordBuilderImpl() {
 		timestamp = System.currentTimeMillis();
 		metrics = Lists.newArrayList();
 
 	}
 
 	public MetricsRecordBuilderImpl addCounter(MetricsInfo info, int value) {
-		metrics.add(new MetricCounterInt(info,value));
+		metrics.add(new MetricCounterInt(info, value));
 		return this;
 	}
 
 	@Override
 	public MetricsRecordBuilderImpl addCounter(MetricsInfo info, long value) {
-		metrics.add(new MetricCounterLong(info,value));
+		metrics.add(new MetricCounterLong(info, value));
 		return this;
 	}
 
 	@Override
 	public MetricsRecordBuilderImpl addGauge(MetricsInfo info, int value) {
-
-		metrics.add(new MetricGaugeInt(info,value));
-
+		metrics.add(new MetricGaugeInt(info, value));
 		return this;
 	}
 
 	@Override
 	public MetricsRecordBuilderImpl addGauge(MetricsInfo info, long value) {
-
-		metrics.add(new MetricGaugeLong(info,value));
-
+		metrics.add(new MetricGaugeLong(info, value));
 		return this;
 	}
 
 	@Override
 	public MetricsRecordBuilderImpl addGauge(MetricsInfo info, float value) {
-
-		metrics.add(new MetricGaugeFloat(info,value));
-
+		metrics.add(new MetricGaugeFloat(info, value));
 		return this;
 	}
 
 	@Override
 	public MetricsRecordBuilderImpl addGauge(MetricsInfo info, double value) {
-
-		metrics.add(new MetricGaugeDouble(info,value));
-
+		metrics.add(new MetricGaugeDouble(info, value));
 		return this;
 	}
 
 	@Override
 	public MetricsRecordBuilder setContext(String value) {
-		// TODO Auto-generated method stub
-		return null;
+		this.context = value;
+		return this;
 	}
 
-	// public MetricsRecordImpl getRecord() {
-	// if (acceptable && (recordFilter == null || recordFilter.accepts(tags))) {
-	// return new MetricsRecordImpl(recInfo, timestamp, tags(), metrics());
-	// }
-	// return null;
-	// }
-	//
-	// List<AbstractMetric> metrics() {
-	// return Collections.unmodifiableList(metrics);
-	// }
+	public MetricsRecord getRecord() {
+		return new MetricsRecordImpl(timestamp, context, metrics());
+	}
+
+	private List<Metric> metrics() {
+		return Collections.unmodifiableList(metrics);
+	}
 }

@@ -33,16 +33,6 @@ public interface MetricsRecord {
 	long timestamp();
 
 	/**
-	 * @return the record name
-	 */
-	String name();
-
-	/**
-	 * @return the description of the record
-	 */
-	String description();
-
-	/**
 	 * @return the context name of the record
 	 */
 	String context();
@@ -52,5 +42,5 @@ public interface MetricsRecord {
 	 * 
 	 * @return an immutable iterable interface for metrics
 	 */
-	Iterable<Metircs> metrics();
+	Iterable<Metric> metrics();
 }
