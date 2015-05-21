@@ -18,7 +18,6 @@
 
 package mill.zhj.metrics.sources;
 
-import mill.zhj.metrics.MetricType;
 import mill.zhj.metrics.MetricsInfo;
 
 import com.google.common.base.Objects;

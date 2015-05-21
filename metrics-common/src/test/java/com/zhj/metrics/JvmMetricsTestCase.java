@@ -1,6 +1,7 @@
 package com.zhj.metrics;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import mill.zhj.metrics.MetricsContext;
 import mill.zhj.metrics.impl.DefaultMetricsContext;
@@ -12,7 +13,9 @@ public class JvmMetricsTestCase {
 	public static void main(String[] args) throws Exception {
 
 		JvmMetrics metricsSource = new JvmMetrics("testApp", "jvm", new HashMap<String, String>());
-		FileSink metricsSink = new FileSink("fileSink", new HashMap<String, String>());
+		Map<String, String> conf = new HashMap<String, String>();
+		// conf.put("filename", "test.txt");
+		FileSink metricsSink = new FileSink("fileSink", conf);
 
 		final MetricsContext context = new DefaultMetricsContext("testApp", "jvm");
 		context.registerSource(metricsSource);
