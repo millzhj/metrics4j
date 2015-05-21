@@ -24,65 +24,64 @@ import java.util.List;
 import mill.zhj.metrics.Metric;
 import mill.zhj.metrics.MetricsInfo;
 import mill.zhj.metrics.MetricsRecord;
-import mill.zhj.metrics.MetricsRecordBuilder;
 
 import com.google.common.collect.Lists;
 
-public class MetricsRecordBuilderImpl implements MetricsRecordBuilder {
+public class MetricsRecordBuilder {
 
 	private final long timestamp;
 	private final List<Metric> metrics;
 	private String context;
+	private String application;
 
-	public MetricsRecordBuilderImpl() {
+	public MetricsRecordBuilder() {
 		timestamp = System.currentTimeMillis();
 		metrics = Lists.newArrayList();
 
 	}
 
-	public MetricsRecordBuilderImpl addCounter(MetricsInfo info, int value) {
+	public MetricsRecordBuilder addCounter(MetricsInfo info, int value) {
 		metrics.add(new MetricCounterInt(info, value));
 		return this;
 	}
 
-	@Override
-	public MetricsRecordBuilderImpl addCounter(MetricsInfo info, long value) {
+	public MetricsRecordBuilder addCounter(MetricsInfo info, long value) {
 		metrics.add(new MetricCounterLong(info, value));
 		return this;
 	}
 
-	@Override
-	public MetricsRecordBuilderImpl addGauge(MetricsInfo info, int value) {
+	public MetricsRecordBuilder addGauge(MetricsInfo info, int value) {
 		metrics.add(new MetricGaugeInt(info, value));
 		return this;
 	}
 
-	@Override
-	public MetricsRecordBuilderImpl addGauge(MetricsInfo info, long value) {
+	public MetricsRecordBuilder addGauge(MetricsInfo info, long value) {
 		metrics.add(new MetricGaugeLong(info, value));
 		return this;
 	}
 
-	@Override
-	public MetricsRecordBuilderImpl addGauge(MetricsInfo info, float value) {
+	public MetricsRecordBuilder addGauge(MetricsInfo info, float value) {
 		metrics.add(new MetricGaugeFloat(info, value));
 		return this;
 	}
 
-	@Override
-	public MetricsRecordBuilderImpl addGauge(MetricsInfo info, double value) {
+	public MetricsRecordBuilder addGauge(MetricsInfo info, double value) {
 		metrics.add(new MetricGaugeDouble(info, value));
 		return this;
 	}
 
-	@Override
 	public MetricsRecordBuilder setContext(String value) {
 		this.context = value;
 		return this;
 	}
 
+	public MetricsRecordBuilder setApplication(String value) {
+		this.application = value;
+		return this;
+	}
+
 	public MetricsRecord getRecord() {
-		return new MetricsRecordImpl(timestamp, context, metrics());
+		return new MetricsRecordImpl(timestamp, application, context, metrics());
 	}
 
 	private List<Metric> metrics() {

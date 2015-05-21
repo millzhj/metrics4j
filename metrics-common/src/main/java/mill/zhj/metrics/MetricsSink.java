@@ -30,39 +30,8 @@ import java.io.Closeable;
  */
 
 public interface MetricsSink {
-	
-	
-	void setName(String name);
-	
-	
+
 	String getName();
-	/**
-	 * set metric context
-	 * 
-	 * @param context
-	 */
-	void setContext(String context);
-
-	/**
-	 * set metric application
-	 * 
-	 * @param application
-	 */
-	void setApplication(String application);
-	
-	/**
-	 * set metric context
-	 * 
-	 * @param context
-	 */
-	String getContext();
-
-	/**
-	 * set metric application
-	 * 
-	 * @param application
-	 */
-	String getApplication();
 
 	/**
 	 * Put a metrics record in the sink

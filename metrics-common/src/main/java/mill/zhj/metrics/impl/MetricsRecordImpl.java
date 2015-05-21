@@ -37,9 +37,11 @@ public class MetricsRecordImpl implements MetricsRecord {
 	private long timestamp;
 	private String context;
 	private List<Metric> metrics;
+	private String application;
 
-	public MetricsRecordImpl(long timestamp, String context, List<Metric> metrics) {
+	public MetricsRecordImpl(long timestamp, String application, String context, List<Metric> metrics) {
 		this.timestamp = timestamp;
+		this.application = application;
 		this.context = context;
 		this.metrics = metrics;
 	}
@@ -57,6 +59,11 @@ public class MetricsRecordImpl implements MetricsRecord {
 	@Override
 	public Iterable<Metric> metrics() {
 		return metrics;
+	}
+
+	@Override
+	public String application() {
+		return application;
 	}
 
 }

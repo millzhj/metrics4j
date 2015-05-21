@@ -18,7 +18,6 @@
 
 package mill.zhj.metrics;
 
-import java.util.Collection;
 
 /**
  * An immutable snapshot of metrics with a timestamp
@@ -31,7 +30,9 @@ public interface MetricsRecord {
 	 * @return the timestamp
 	 */
 	long timestamp();
-
+	
+	
+	String application();
 	/**
 	 * @return the context name of the record
 	 */

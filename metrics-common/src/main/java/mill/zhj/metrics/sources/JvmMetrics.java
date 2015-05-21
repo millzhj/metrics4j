@@ -18,21 +18,34 @@
 
 package mill.zhj.metrics.sources;
 
+import static mill.zhj.metrics.sources.JvmMetricsInfo.MemHeapCommittedM;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.MemHeapMaxM;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.MemHeapUsedM;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.MemMaxM;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.MemNonHeapCommittedM;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.MemNonHeapMaxM;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.MemNonHeapUsedM;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.ThreadsBlocked;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.ThreadsNew;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.ThreadsRunnable;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.ThreadsTerminated;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.ThreadsTimedWaiting;
+import static mill.zhj.metrics.sources.JvmMetricsInfo.ThreadsWaiting;
+
+import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import java.lang.management.GarbageCollectorMXBean;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import mill.zhj.metrics.MetricsInfo;
 import mill.zhj.metrics.MetricsRecord;
-import mill.zhj.metrics.MetricsRecordBuilder;
 import mill.zhj.metrics.MetricsSource;
-import mill.zhj.metrics.impl.MetricsRecordBuilderImpl;
-import static mill.zhj.metrics.sources.JvmMetricsInfo.*;
+import mill.zhj.metrics.impl.MetricsRecordBuilder;
 
 /**
  * JVM and logging related metrics. Mostly used by various servers as a part of the metrics they export.
@@ -46,27 +59,23 @@ public class JvmMetrics implements MetricsSource {
 	final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 	final ConcurrentHashMap<String, MetricsInfo[]> gcInfoCache = new ConcurrentHashMap<String, MetricsInfo[]>();
 
-	final static String DEFAULT_CONTEXT_NAME = "jvm";
-	private String contextName = DEFAULT_CONTEXT_NAME;
+	final static String DEFAULT_CONTEXT = "jvm";
 
-	public JvmMetrics() {
+	private String application;
 
-	}
-
-	public JvmMetrics(String contextName) {
-		this.contextName = contextName;
+	public JvmMetrics(String application, Map<String, String> config) {
+		this.application = application;
 	}
 
 	private MetricsRecordBuilder getMetrics() {
-		MetricsRecordBuilder rb = new MetricsRecordBuilderImpl();
-		rb.setContext(contextName);
+		MetricsRecordBuilder rb = new MetricsRecordBuilder();
+		rb.setApplication(application).setContext(DEFAULT_CONTEXT);
 		getMemoryUsage(rb);
 		// getGcUsage(rb);
 		getThreadUsage(rb);
 		return rb;
 	}
 
-	@Override
 	public MetricsRecord getMetricsRecord() {
 		MetricsRecordBuilder rb = getMetrics();
 		return rb.getRecord();
