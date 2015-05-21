@@ -24,6 +24,7 @@
 		<junit.version>4.8.2</junit.version>
 	 	<slf4j.version>1.6.1</slf4j.version>
 		<log4j.version>1.6.1</log4j.version>
+		<dom4j.version>1.6.1</dom4j.version>
 	</properties>
 
 	<dependencyManagement>
@@ -58,6 +59,11 @@
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
 				<version>${guava.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>dom4j</groupId>
+				<artifactId>dom4j</artifactId>
+				<version>${dom4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>

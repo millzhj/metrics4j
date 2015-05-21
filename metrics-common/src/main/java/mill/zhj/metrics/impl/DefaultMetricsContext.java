@@ -1,5 +1,14 @@
 package mill.zhj.metrics.impl;
 
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.google.common.collect.Maps;
+
 import mill.zhj.metrics.MetricsContext;
 import mill.zhj.metrics.MetricsRecord;
 import mill.zhj.metrics.MetricsSink;
@@ -9,10 +18,24 @@ public class DefaultMetricsContext implements MetricsContext {
 
 	private String contextName;
 
-	private int period = 5;// 5 seconds
+	private String application;
 
-	public DefaultMetricsContext(String contextName) {
+	private Map<String, MetricsSink> metricsSinks = Maps.newConcurrentMap();
+
+	private MetricsSource metricsSource;
+
+	private int period = DEFAULT_PERIOD;
+
+	private long delay = 5;
+
+	private ScheduledExecutorService scheduledExecutorService;
+
+	private AtomicBoolean started = new AtomicBoolean(false);
+
+	public DefaultMetricsContext(String application, String contextName) {
+		this.application = application;
 		this.contextName = contextName;
+		scheduledExecutorService = Executors.newScheduledThreadPool(1);
 	}
 
 	@Override
@@ -21,56 +44,79 @@ public class DefaultMetricsContext implements MetricsContext {
 	}
 
 	@Override
-	public void close() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public int getPeriod() {
 		return period;
 	}
 
 	@Override
-	public MetricsRecord getMetricsRecord() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public void start() {
-		// TODO Auto-generated method stub
+		if (!started.get()) {
+			scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
+				@Override
+				public void run() {
+					MetricsRecord record = metricsSource.getMetricsRecord();
+					Set<Map.Entry<String, MetricsSink>> entrySet = metricsSinks.entrySet();
+					for (Map.Entry<String, MetricsSink> entry : entrySet) {
+						MetricsSink metricsSink = entry.getValue();
+						metricsSink.putMetrics(record);
+						metricsSink.flush();
+					}
+				}
+			}, delay, period, TimeUnit.SECONDS);
+		}
+		started.compareAndSet(false, true);
 	}
 
 	@Override
 	public void stop() {
-		// TODO Auto-generated method stub
+		try {
+			scheduledExecutorService.shutdown();
+		} catch (Exception e) {
+		}
+		try {
+			metricsSource.stop();
+		} catch (Exception e) {
+		}
+
+		try {
+			Set<Map.Entry<String, MetricsSink>> entrySet = metricsSinks.entrySet();
+			for (Map.Entry<String, MetricsSink> entry : entrySet) {
+				MetricsSink metricsSink = entry.getValue();
+				try {
+					metricsSink.stop();
+				} catch (Exception e) {
+				}
+
+			}
+		} catch (Exception e) {
+		}
 
 	}
 
 	@Override
 	public void registerSink(MetricsSink sink) {
-		// TODO Auto-generated method stub
-
+		metricsSinks.put(sink.getName(), sink);
 	}
 
 	@Override
 	public void unregisterSink(MetricsSink sink) {
-		// TODO Auto-generated method stub
+		unregisterSink(sink.getName());
+	}
 
+	@Override
+	public void unregisterSink(String sinkName) {
+		metricsSinks.remove(sinkName);
 	}
 
 	@Override
 	public void registerSource(MetricsSource source) {
-		// TODO Auto-generated method stub
-
+		this.metricsSource = source;
 	}
 
 	@Override
-	public void unregisterSource(MetricsSource source) {
-		// TODO Auto-generated method stub
-
+	public String getApplication() {
+		return application;
 	}
 
 }

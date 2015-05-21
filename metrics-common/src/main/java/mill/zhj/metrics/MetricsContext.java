@@ -31,17 +31,14 @@ public interface MetricsContext {
 	 */
 	public static final int DEFAULT_PERIOD = 5;
 
+	String getApplication();
+
 	/**
 	 * Returns the context name.
 	 * 
 	 * @return the context name
 	 */
 	String getContextName();
-
-	/**
-	 * Stops monitoring and also frees any buffered data, returning this object to its initial state.
-	 */
-	void close();
 
 	/**
 	 * Registers a callback to be called at regular time intervals, as determined by the implementation-class specific
@@ -60,21 +57,20 @@ public interface MetricsContext {
 	 */
 	void unregisterSink(MetricsSink sink);
 
-	void registerSource(MetricsSource source);
+	/**
+	 * Removes a callback, if it exists.
+	 * 
+	 * @param updater
+	 *            object to be removed from the callback list
+	 */
+	void unregisterSink(String sinkName);
 
-	void unregisterSource(MetricsSource source);
+	void registerSource(MetricsSource source);
 
 	/**
 	 * Returns the timer period.
 	 */
-	public abstract int getPeriod();
-
-	/**
-	 * retrive MetricsRecord
-	 * 
-	 * @return MetricsRecord
-	 */
-	MetricsRecord getMetricsRecord();
+	int getPeriod();
 
 	void start();
 

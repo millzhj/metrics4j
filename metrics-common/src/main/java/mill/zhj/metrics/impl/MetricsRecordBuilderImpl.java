@@ -28,7 +28,7 @@ import mill.zhj.metrics.MetricsRecordBuilder;
 
 import com.google.common.collect.Lists;
 
-public class MetricsRecordBuilderImpl extends MetricsRecordBuilder {
+public class MetricsRecordBuilderImpl implements MetricsRecordBuilder {
 
 	private final long timestamp;
 	private final List<Metric> metrics;

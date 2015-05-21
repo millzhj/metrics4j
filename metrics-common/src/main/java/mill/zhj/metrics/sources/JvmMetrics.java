@@ -27,13 +27,10 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.or.jms.MessageRenderer;
-
 import mill.zhj.metrics.MetricsInfo;
 import mill.zhj.metrics.MetricsRecord;
 import mill.zhj.metrics.MetricsRecordBuilder;
 import mill.zhj.metrics.MetricsSource;
-import mill.zhj.metrics.MetricsSystem;
 import mill.zhj.metrics.impl.MetricsRecordBuilderImpl;
 import static mill.zhj.metrics.sources.JvmMetricsInfo.*;
 
@@ -49,21 +46,30 @@ public class JvmMetrics implements MetricsSource {
 	final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 	final ConcurrentHashMap<String, MetricsInfo[]> gcInfoCache = new ConcurrentHashMap<String, MetricsInfo[]>();
 
-	final static String DEFAULT_CONTEXT = "jvm";
+	final static String DEFAULT_CONTEXT_NAME = "jvm";
+	private String contextName = DEFAULT_CONTEXT_NAME;
 
-	private JvmMetrics() {
+	public JvmMetrics() {
+
 	}
 
-	public static JvmMetrics create(MetricsSystem ms) {
-		return (JvmMetrics) ms.register(DEFAULT_CONTEXT, new JvmMetrics());
+	public JvmMetrics(String contextName) {
+		this.contextName = contextName;
 	}
 
-	public void getMetrics() {
+	private MetricsRecordBuilder getMetrics() {
 		MetricsRecordBuilder rb = new MetricsRecordBuilderImpl();
-		rb.setContext(DEFAULT_CONTEXT);
+		rb.setContext(contextName);
 		getMemoryUsage(rb);
 		// getGcUsage(rb);
 		getThreadUsage(rb);
+		return rb;
+	}
+
+	@Override
+	public MetricsRecord getMetricsRecord() {
+		MetricsRecordBuilder rb = getMetrics();
+		return rb.getRecord();
 	}
 
 	private void getMemoryUsage(MetricsRecordBuilder rb) {

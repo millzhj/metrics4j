@@ -24,50 +24,7 @@ package mill.zhj.metrics;
 public interface MetricsSystem {
 
 	/**
-	 * Register a metrics source
-	 * 
-	 * @param name
-	 * @param desc
-	 * @param source
-	 * @return
-	 */
-
-	public MetricsSource register(String name, MetricsSource source);
-
-	/**
-	 * Unregister a metrics source
-	 * 
-	 * @param name
-	 *            of the source. This is the name you use to call register()
-	 */
-	public void unregisterSource(String name);
-
-	/**
-	 * @param name
-	 *            of the metrics source
-	 * @return the metrics source (potentially wrapped) object
-	 */
-
-	public MetricsSource getSource(String name);
-
-	/**
-	 * Register a metrics sink
-	 * 
-	 * @param name
-	 * @param desc
-	 * @param sink
-	 * @return
-	 */
-
-	public MetricsSink register(MetricsSink sink);
-
-	/**
-	 * Requests an immediate publish of all metrics from sources to sinks.
-	 * 
-	 * This is a "soft" request: the expectation is that a best effort will be done to synchronously snapshot the
-	 * metrics from all the sources and put them in all the sinks (including flushing the sinks) before returning to the
-	 * caller. If this can't be accomplished in reasonable time it's OK to return to the caller before everything is
-	 * done.
+	 * start the metrics monitor system
 	 */
 	public void start();
 
@@ -77,6 +34,6 @@ public interface MetricsSystem {
 	 * 
 	 * @return true if shutdown completed
 	 */
-	public boolean shutdown();
+	public void shutdown();
 
 }

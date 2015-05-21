@@ -1,108 +1,81 @@
 package mill.zhj.metrics.impl;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
+import mill.zhj.metrics.MetricsContext;
+import mill.zhj.metrics.MetricsSystem;
+
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Maps;
 
-import mill.zhj.metrics.MetricsSink;
-import mill.zhj.metrics.MetricsSource;
-import mill.zhj.metrics.MetricsSystem;
-
 public class DefaultMetricsSystem implements MetricsSystem {
 
-	private Map<String, MetricsSource> sources = Maps.newConcurrentMap();// key is context value si source
+	private static final String CONFIG_NAME = "monitor-conf";
 
-	private Map<String, MetricsSink> sinks = Maps.newConcurrentMap();// key is context value is sink
+	private static final String DEFALUT_CONF_FILE = "monitor.xml";
 
-	private static final String PRPERTIES_NAME = "metrics-conf";
+	private String application;
 
-	private static final String DEFALUT_CONF_FILE = "conf.properties";
+	private Map<String, MetricsContext> metricsContexts = Maps.newConcurrentMap();
 
-	private static final String APP_KEY = "app";
+	private static final DefaultMetricsSystem INSTANCE = new DefaultMetricsSystem();
 
-	private String application = "DEFAULT";
+	private static final Logger logger = LoggerFactory.getLogger(DefaultMetricsSystem.class);
 
 	private DefaultMetricsSystem() {
 		// load from file path
-		String file = System.getProperty(PRPERTIES_NAME);
+		String file = System.getProperty(CONFIG_NAME);
 		if (StringUtils.isEmpty(file)) {
 			// default load config from classpath
 			file = DEFALUT_CONF_FILE;
 			file = this.getClass().getClassLoader().getResource(file).getFile();
 		}
 		try {
-			Configuration config = new PropertiesConfiguration(file);
-			init(config);
-		} catch (ConfigurationException e) {
-			throw new IllegalArgumentException("config file error:" + e.getMessage(), e);
+			init(file);
 		} catch (IllegalStateException stateException) {
 			throw new IllegalArgumentException("parse config error:" + stateException.getMessage(), stateException);
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	private void init(Configuration config) throws IllegalStateException {
-		application = config.getString(APP_KEY);
-		Iterator keys = config.getKeys();
-		while (keys.hasNext()) {
-			String key = (String) keys.next();
-			if (key.equals(APP_KEY))
-				continue;
-			String value = (String) config.getString(key);
-			String[] splitKey = key.split(".");
-			if (splitKey.length < 3) {
-				throw new IllegalStateException("config item key " + key + " error ,the default key length is 3 split by (.) pls check it");
-			}
-			MetricsSink sink = null;
-			try {
-				sink = (MetricsSink) Class.forName(value).newInstance();
-			} catch (Exception e) {
-				throw new IllegalStateException("init sink class " + value + " error :" + e.getMessage(), e);
-			}
-			sink.setApplication(splitKey[0]);// set application
-			sink.setContext(splitKey[1]);
-			register(sink);
+	private void init(String file) throws IllegalStateException {
+		MonitorConfiguration configuration = MonitorConfiguration.create(file);
+		application = configuration.getApplication();
+		List<MetricsContext> contexts = configuration.getMetricsContexts();
+		for (MetricsContext context : contexts) {
+			logger.debug("install context " + application + "." + context.getContextName() + " monitor to system....");
+			metricsContexts.put(context.getContextName(), context);
 		}
 	}
 
-	@Override
-	public MetricsSource register(String context, MetricsSource source) {
-		sources.put(context, source);
-		return source;
-	}
-
-	@Override
-	public void unregisterSource(String context) {
-		sources.remove(context);
-
-	}
-
-	@Override
-	public MetricsSource getSource(String name) {
-		return sources.get(name);
-	}
-
-	@Override
-	public MetricsSink register(MetricsSink sink) {
-		sinks.put(sink.getContext(), sink);
-		return sink;
+	public static DefaultMetricsSystem getInstance() {
+		return INSTANCE;
 	}
 
 	@Override
 	public void start() {
-		
+		logger.info("monitor " + application + " metrics system start....");
+		Set<Map.Entry<String, MetricsContext>> entrySet = metricsContexts.entrySet();
+		for (Map.Entry<String, MetricsContext> entry : entrySet) {
+			logger.info(String.format("monitor %s.%s metrics start...", application, entry.getKey()));
+			MetricsContext metricsContext = entry.getValue();
+			metricsContext.start();
+		}
 	}
 
 	@Override
-	public boolean shutdown() {
-		// TODO Auto-generated method stub
-		return false;
+	public void shutdown() {
+		logger.info("monitor " + application + " metrics system stop....");
+		Set<Map.Entry<String, MetricsContext>> entrySet = metricsContexts.entrySet();
+		for (Map.Entry<String, MetricsContext> entry : entrySet) {
+			logger.info(String.format("monitor %s.%s metrics stop...", application, entry.getKey()));
+			MetricsContext metricsContext = entry.getValue();
+			metricsContext.start();
+		}
 	}
 
 }

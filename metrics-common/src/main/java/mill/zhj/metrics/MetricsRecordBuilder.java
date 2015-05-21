@@ -22,7 +22,7 @@ package mill.zhj.metrics;
  * The metrics record builder interface
  */
 
-public abstract class MetricsRecordBuilder {
+public interface MetricsRecordBuilder {
 
 	/**
 	 * Set the context tag
@@ -31,7 +31,7 @@ public abstract class MetricsRecordBuilder {
 	 *            of the context
 	 * @return self
 	 */
-	public abstract MetricsRecordBuilder setContext(String value);
+	MetricsRecordBuilder setContext(String value);
 
 	/**
 	 * Add an integer metric
@@ -42,7 +42,7 @@ public abstract class MetricsRecordBuilder {
 	 *            of the metric
 	 * @return self
 	 */
-	public abstract MetricsRecordBuilder addCounter(MetricsInfo info, int value);
+	MetricsRecordBuilder addCounter(MetricsInfo info, int value);
 
 	/**
 	 * Add an long metric
@@ -53,7 +53,7 @@ public abstract class MetricsRecordBuilder {
 	 *            of the metric
 	 * @return self
 	 */
-	public abstract MetricsRecordBuilder addCounter(MetricsInfo info, long value);
+	MetricsRecordBuilder addCounter(MetricsInfo info, long value);
 
 	/**
 	 * Add a integer gauge metric
@@ -64,7 +64,7 @@ public abstract class MetricsRecordBuilder {
 	 *            of the metric
 	 * @return self
 	 */
-	public abstract MetricsRecordBuilder addGauge(MetricsInfo info, int value);
+	MetricsRecordBuilder addGauge(MetricsInfo info, int value);
 
 	/**
 	 * Add a long gauge metric
@@ -75,7 +75,7 @@ public abstract class MetricsRecordBuilder {
 	 *            of the metric
 	 * @return self
 	 */
-	public abstract MetricsRecordBuilder addGauge(MetricsInfo info, long value);
+	MetricsRecordBuilder addGauge(MetricsInfo info, long value);
 
 	/**
 	 * Add a float gauge metric
@@ -86,7 +86,7 @@ public abstract class MetricsRecordBuilder {
 	 *            of the metric
 	 * @return self
 	 */
-	public abstract MetricsRecordBuilder addGauge(MetricsInfo info, float value);
+	MetricsRecordBuilder addGauge(MetricsInfo info, float value);
 
 	/**
 	 * Add a double gauge metric
@@ -97,6 +97,8 @@ public abstract class MetricsRecordBuilder {
 	 *            of the metric
 	 * @return self
 	 */
-	public abstract MetricsRecordBuilder addGauge(MetricsInfo info, double value);
+	MetricsRecordBuilder addGauge(MetricsInfo info, double value);
+
+	MetricsRecord getRecord();
 
 }
