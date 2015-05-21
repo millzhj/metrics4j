@@ -45,13 +45,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import mill.zhj.metrics.MetricsInfo;
 import mill.zhj.metrics.MetricsRecord;
 import mill.zhj.metrics.MetricsSource;
+import mill.zhj.metrics.impl.AbstractMetricsSource;
 import mill.zhj.metrics.impl.MetricsRecordBuilder;
 
 /**
  * JVM and logging related metrics. Mostly used by various servers as a part of the metrics they export.
  */
 
-public class JvmMetrics implements MetricsSource {
+public class JvmMetrics extends AbstractMetricsSource {
 
 	static final float M = 1024 * 1024;
 	final MemoryMXBean memoryMXBean = ManagementFactory.getMemoryMXBean();
@@ -59,17 +60,13 @@ public class JvmMetrics implements MetricsSource {
 	final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();
 	final ConcurrentHashMap<String, MetricsInfo[]> gcInfoCache = new ConcurrentHashMap<String, MetricsInfo[]>();
 
-	final static String DEFAULT_CONTEXT = "jvm";
-
-	private String application;
-
-	public JvmMetrics(String application, Map<String, String> config) {
-		this.application = application;
+	public JvmMetrics(String application, String context, Map<String, String> conf) {
+		super(application, context, conf);
 	}
 
 	private MetricsRecordBuilder getMetrics() {
 		MetricsRecordBuilder rb = new MetricsRecordBuilder();
-		rb.setApplication(application).setContext(DEFAULT_CONTEXT);
+		rb.setApplication(application).setContext(context);
 		getMemoryUsage(rb);
 		// getGcUsage(rb);
 		getThreadUsage(rb);
