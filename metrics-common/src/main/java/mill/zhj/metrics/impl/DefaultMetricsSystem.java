@@ -23,9 +23,9 @@ public class DefaultMetricsSystem implements MetricsSystem {
 
 	private Map<String, MetricsContext> metricsContexts = Maps.newConcurrentMap();
 
-	private static final DefaultMetricsSystem INSTANCE = new DefaultMetricsSystem();
-
 	private static final Logger logger = LoggerFactory.getLogger(DefaultMetricsSystem.class);
+
+	private static final DefaultMetricsSystem INSTANCE = new DefaultMetricsSystem();
 
 	private DefaultMetricsSystem() {
 		// load from file path

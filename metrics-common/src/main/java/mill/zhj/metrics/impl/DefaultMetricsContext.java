@@ -70,6 +70,7 @@ public class DefaultMetricsContext implements MetricsContext {
 
 	@Override
 	public void stop() {
+		started.compareAndSet(true, false);
 		try {
 			scheduledExecutorService.shutdown();
 		} catch (Exception e) {

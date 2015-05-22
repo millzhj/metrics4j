@@ -3,6 +3,8 @@ package com.zhj.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Test;
+
 import mill.zhj.metrics.MetricsContext;
 import mill.zhj.metrics.impl.DefaultMetricsContext;
 import mill.zhj.metrics.sink.FileSink;
@@ -10,7 +12,8 @@ import mill.zhj.metrics.sources.JvmMetrics;
 
 public class JvmMetricsTestCase {
 
-	public static void main(String[] args) throws Exception {
+	@Test
+	public void run() {
 
 		JvmMetrics metricsSource = new JvmMetrics("testApp", "jvm", new HashMap<String, String>());
 		Map<String, String> conf = new HashMap<String, String>();
@@ -29,7 +32,11 @@ public class JvmMetricsTestCase {
 		});
 
 		startThread.start();
-		Thread.sleep(20000);
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			throw new IllegalStateException(e);
+		}
 		context.stop();
 	}
 }
