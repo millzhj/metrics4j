@@ -2,7 +2,7 @@ package com.zhj.metrics;
 
 import org.junit.Test;
 
-import mill.zhj.metrics.impl.DefaultMetricsSystem;
+import mill.zhj.metrics.component.DefaultMetricsSystem;
 
 public class DefaultMetricsSystemTestCase {
 	

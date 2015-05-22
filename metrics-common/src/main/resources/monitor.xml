@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Application name="testApp">
 	<Context name="jvm" period="5">
-		<MetricSource name="jvmSource" class="mill.zhj.metrics.sources.JvmMetrics"/>
-		<MetricSink name="fileSink" class="mill.zhj.metrics.sink.FileSink"/>
+		<MetricSource class="mill.zhj.metrics.sources.JvmMetrics" />
+		<MetricSink name="fileSink" class="mill.zhj.metrics.sink.FileSink" />
 	</Context>
 </Application>

@@ -1,5 +1,7 @@
-package mill.zhj.metrics.impl;
+package mill.zhj.metrics.component;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -7,14 +9,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.google.common.collect.Maps;
-
-import mill.zhj.metrics.MetricsContext;
 import mill.zhj.metrics.MetricsRecord;
 import mill.zhj.metrics.MetricsSink;
 import mill.zhj.metrics.MetricsSource;
 
-public class DefaultMetricsContext implements MetricsContext {
+import com.google.common.collect.Maps;
+
+public class MetricsContext {
+
+	/**
+	 * Default period in seconds at which data is sent to the metrics system.
+	 */
+	public static final int DEFAULT_PERIOD = 5;
 
 	private String contextName;
 
@@ -32,28 +38,24 @@ public class DefaultMetricsContext implements MetricsContext {
 
 	private AtomicBoolean started = new AtomicBoolean(false);
 
-	public DefaultMetricsContext(String application, String contextName) {
+	public MetricsContext(String application, String contextName) {
 		this.application = application;
 		this.contextName = contextName;
 		scheduledExecutorService = Executors.newScheduledThreadPool(1);
 	}
 
-	@Override
 	public String getContextName() {
 		return contextName;
 	}
 
-	@Override
 	public int getPeriod() {
 		return period;
 	}
 
-	@Override
 	public void start() {
 		if (!started.get()) {
 			scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
 
-				@Override
 				public void run() {
 					MetricsRecord record = metricsSource.getMetricsRecord();
 					Set<Map.Entry<String, MetricsSink>> entrySet = metricsSinks.entrySet();
@@ -68,7 +70,6 @@ public class DefaultMetricsContext implements MetricsContext {
 		started.compareAndSet(false, true);
 	}
 
-	@Override
 	public void stop() {
 		started.compareAndSet(true, false);
 		try {
@@ -95,29 +96,33 @@ public class DefaultMetricsContext implements MetricsContext {
 
 	}
 
-	@Override
-	public void registerSink(MetricsSink sink) {
+	public void registerMetricsSink(MetricsSink sink) {
 		metricsSinks.put(sink.getName(), sink);
 	}
 
-	@Override
-	public void unregisterSink(MetricsSink sink) {
-		unregisterSink(sink.getName());
-	}
-
-	@Override
-	public void unregisterSink(String sinkName) {
+	public void unregisterMetricsSink(String sinkName) {
 		metricsSinks.remove(sinkName);
 	}
 
-	@Override
-	public void registerSource(MetricsSource source) {
+	public void setMetricsSource(MetricsSource source) {
 		this.metricsSource = source;
 	}
 
-	@Override
 	public String getApplication() {
 		return application;
+	}
+
+	public MetricsSource getMetricsSource() {
+		return metricsSource;
+
+	}
+
+	public Collection<MetricsSink> getMetricsSinks() {
+		return Collections.unmodifiableCollection(metricsSinks.values());
+	}
+
+	public void setPeriod(int period) {
+		this.period = period;
 	}
 
 }

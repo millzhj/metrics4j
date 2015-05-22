@@ -3,12 +3,11 @@ package com.zhj.metrics;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
-
-import mill.zhj.metrics.MetricsContext;
-import mill.zhj.metrics.impl.DefaultMetricsContext;
+import mill.zhj.metrics.component.MetricsContext;
 import mill.zhj.metrics.sink.FileSink;
 import mill.zhj.metrics.sources.JvmMetrics;
+
+import org.junit.Test;
 
 public class JvmMetricsTestCase {
 
@@ -20,9 +19,9 @@ public class JvmMetricsTestCase {
 		// conf.put("filename", "test.txt");
 		FileSink metricsSink = new FileSink("fileSink", conf);
 
-		final MetricsContext context = new DefaultMetricsContext("testApp", "jvm");
-		context.registerSource(metricsSource);
-		context.registerSink(metricsSink);
+		final MetricsContext context = new MetricsContext("testApp", "jvm");
+		context.setMetricsSource(metricsSource);
+		context.registerMetricsSink(metricsSink);
 		Thread startThread = new Thread(new Runnable() {
 
 			@Override

@@ -1,4 +1,4 @@
-package mill.zhj.metrics.impl;
+package mill.zhj.metrics.component;
 
 import java.util.Map;
 

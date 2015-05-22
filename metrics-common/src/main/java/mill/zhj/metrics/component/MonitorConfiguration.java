@@ -1,14 +1,14 @@
-package mill.zhj.metrics.impl;
+package mill.zhj.metrics.component;
 
 import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import mill.zhj.metrics.MetricsContext;
 import mill.zhj.metrics.MetricsSink;
 import mill.zhj.metrics.MetricsSource;
 
+import org.apache.commons.lang.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -24,7 +24,12 @@ public class MonitorConfiguration {
 
 	private MonitorConfiguration() {
 	}
-
+	
+	/**
+	 *  must refactor the parse process TODO
+	 * @param file
+	 * @return
+	 */
 	@SuppressWarnings({ "unused", "unchecked" })
 	public static MonitorConfiguration create(String file) {
 		MonitorConfiguration configuration = new MonitorConfiguration();
@@ -35,26 +40,31 @@ public class MonitorConfiguration {
 			configuration.application = root.attribute("name").getText();
 			List<Element> contextElements = root.elements("Context");
 			MetricsContext context;
-			for (Element element : contextElements) {
-				Element msElement = element.element("MetricSource");
+			for (Element contextElement : contextElements) {
+				Element msElement = contextElement.element("MetricSource");
 				if (msElement == null)
 					throw new IllegalArgumentException("MetricSource must not be null.");
-				String contextName = element.attributeValue("name");
+				String contextName = contextElement.attributeValue("name");
 				String clazz = msElement.attributeValue("class");
-				context = new DefaultMetricsContext(configuration.getApplication(), contextName);
+				context = new MetricsContext(configuration.getApplication(), contextName);
+				String periodStr = contextElement.attributeValue("period");
+				if (!StringUtils.isEmpty(periodStr)) {
+					int period = Integer.parseInt(periodStr);
+					context.setPeriod(period);
+				}
 				List<Element> propElements = msElement.elements("property");
 				Map<String, String> conf = configuration.getProperties(msElement);
 				MetricsSource source = configuration.create(clazz, configuration.getApplication(), contextName, conf);
-				context.registerSource(source);
+				context.setMetricsSource(source);
 
-				List<Element> sinkElements = element.elements("MetricSink");
+				List<Element> sinkElements = contextElement.elements("MetricSink");
 
 				for (Element sinkElement : sinkElements) {
 					String sinkName = sinkElement.attributeValue("name");
 					String className = sinkElement.attributeValue("class");
 					Map<String, String> conf2 = configuration.getProperties(sinkElement);
 					MetricsSink sink = configuration.create(className, sinkName, conf2);
-					context.registerSink(sink);
+					context.registerMetricsSink(sink);
 				}
 
 				configuration.addMetricsContext(context);

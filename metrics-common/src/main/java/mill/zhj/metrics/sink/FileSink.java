@@ -25,7 +25,7 @@ import java.util.Map;
 
 import mill.zhj.metrics.Metric;
 import mill.zhj.metrics.MetricsRecord;
-import mill.zhj.metrics.impl.AbstractMetricsSink;
+import mill.zhj.metrics.component.AbstractMetricsSink;
 
 /**
  * A metrics sink that writes to a file
