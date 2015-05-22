@@ -9,9 +9,9 @@
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>metrics-common</artifactId>
-	<description>metrics 4j common</description>
-	<name>metrics-4j-common</name>
+	<artifactId>metrics-core</artifactId>
+	<description>metrics 4j core</description>
+	<name>metrics-4j-core</name>
 	<packaging>jar</packaging>
 
 	<dependencies>

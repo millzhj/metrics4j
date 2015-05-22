@@ -9,7 +9,7 @@
 	<name>metrics4j</name>  
 	
 	<modules>
-		<module>metrics-common</module>
+		<module>metrics-core</module>
 		<module>metrics-db</module>
 	</modules>  
 	

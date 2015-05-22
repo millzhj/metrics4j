@@ -16,6 +16,10 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>mill.zhj</groupId>
+			<artifactId>metrics-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 		</dependency>
