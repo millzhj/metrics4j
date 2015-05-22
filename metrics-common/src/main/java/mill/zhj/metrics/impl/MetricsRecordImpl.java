@@ -20,9 +20,7 @@
 
 package mill.zhj.metrics.impl;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import mill.zhj.metrics.Metric;
 import mill.zhj.metrics.MetricsRecord;

@@ -25,20 +25,19 @@ import java.util.Map;
 
 import mill.zhj.metrics.Metric;
 import mill.zhj.metrics.MetricsRecord;
-import mill.zhj.metrics.MetricsSink;
+import mill.zhj.metrics.impl.AbstractMetricsSink;
 
 /**
  * A metrics sink that writes to a file
  */
 
-public class FileSink implements MetricsSink {
+public class FileSink extends AbstractMetricsSink {
 
 	private static final String FILENAME_KEY = "filename";
 	private PrintWriter writer;
-	private String name;
 
 	public FileSink(String name, Map<String, String> conf) {
-		this.name = name;
+		super(name, conf);
 		String filename = conf.get(FILENAME_KEY);
 		try {
 			writer = filename == null ? new PrintWriter(System.out) : new PrintWriter(new FileWriter(new File(filename), true));
@@ -73,11 +72,6 @@ public class FileSink implements MetricsSink {
 	@Override
 	public void stop() {
 		writer.close();
-	}
-
-	@Override
-	public String getName() {
-		return name;
 	}
 
 }
